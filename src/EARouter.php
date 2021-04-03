@@ -191,7 +191,8 @@ class EARouter implements RouterInterface
 								//This means, there is no restriction about the METHOD that is used for this http / https request (GET / POST / PUT / DELETE all works), if the VALUE is ANY.
 								return [
 	
-									'matched_page_filename' => $key,
+									'matched_route_key' => $key,
+									'matched_page_filename' => $routeArray['page_filename'],
 									'received_request_method' => $receivedRequestMethod,
 									'original_route_rel_request_method' => $routeArray['allowed_request_method']
 									
@@ -200,7 +201,8 @@ class EARouter implements RouterInterface
 								//This means, only requests that is initiated using GET METHOD are allowed, if the VALUE is GET.
 								return [
 	
-									'matched_page_filename' => $key,
+									'matched_route_key' => $key,
+									'matched_page_filename' => $routeArray['page_filename'],
 									'received_request_method' => $receivedRequestMethod,
 									'original_route_rel_request_method' => $routeArray['allowed_request_method']
 									
@@ -209,7 +211,8 @@ class EARouter implements RouterInterface
 								//This means, only requests that is initiated using POST METHOD are allowed, if the VALUE is POST.
 								return [
 	
-									'matched_page_filename' => $key,
+									'matched_route_key' => $key,
+									'matched_page_filename' => $routeArray['page_filename'],
 									'received_request_method' => $receivedRequestMethod,
 									'original_route_rel_request_method' => $routeArray['allowed_request_method']
 									
@@ -218,7 +221,8 @@ class EARouter implements RouterInterface
 								//This means, only requests that is initiated using PUT METHOD are allowed, if the VALUE is PUT.
 								return [
 	
-									'matched_page_filename' => $key,
+									'matched_route_key' => $key,
+									'matched_page_filename' => $routeArray['page_filename'],
 									'received_request_method' => $receivedRequestMethod,
 									'original_route_rel_request_method' => $routeArray['allowed_request_method']
 									
@@ -227,7 +231,8 @@ class EARouter implements RouterInterface
 								//This means, only requests that is initiated using DELETE METHOD are allowed, if the VALUE is DELETE.
 								return [
 	
-									'matched_page_filename' => $key,
+									'matched_route_key' => $key,
+									'matched_page_filename' => $routeArray['page_filename'],
 									'received_request_method' => $receivedRequestMethod,
 									'original_route_rel_request_method' => $routeArray['allowed_request_method']
 									
@@ -236,8 +241,9 @@ class EARouter implements RouterInterface
 								//The value of allowed_request_method of $routeArray['allowed_request_method'] is invalid, so, return, bad request in headers response only scenario.
 								//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
 								return [
-	
-									'matched_page_filename' => "header-response-only-405-method-not-allowed",
+									
+									'matched_route_key' => "header-response-only-405-method-not-allowed",
+									'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
 									'received_request_method' => $receivedRequestMethod,
 									'original_route_rel_request_method' => $routeArray['allowed_request_method']
 									
@@ -249,7 +255,8 @@ class EARouter implements RouterInterface
 							//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
 							return [
 
-								'matched_page_filename' => "header-response-only-405-method-not-allowed",
+								'matched_route_key' => "header-response-only-405-method-not-allowed",
+								'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
 								'received_request_method' => $receivedRequestMethod,
 								'original_route_rel_request_method' => $routeArray['allowed_request_method']
 								
@@ -264,8 +271,9 @@ class EARouter implements RouterInterface
 		}
 		
 		return [
-
-			'matched_page_filename' => "header-response-only-404-not-found",
+			
+			'matched_route_key' => "header-response-only-404-not-found",
+			'matched_page_filename' => "header-response-only-404-not-found.php",
 			'received_request_method' => $receivedRequestMethod,
 			'original_route_rel_request_method' => $routeArray['allowed_request_method']
 			

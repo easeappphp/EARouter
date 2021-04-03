@@ -4,7 +4,21 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Compos
 use EARouter\EARouter;
 
 //$eaRouter = new EARouter(RouterInterface $routerInterface);
-$eaRouter = new EARouter();
-$eaRouterUriPathParams = $eaRouter->getUriPathParams($_SERVER['REQUEST_URI']);
 
-print_r($eaRouterUriPathParams);
+$routeFileArray = array('routes/route-file1.php');
+
+$eaRouter = new EARouter();
+$routes = $eaRouter->getFromFilepathsArray($routeFileArray);
+echo "<pre>";
+//print_r($routes);
+
+$eaRouterUriPathParams = $eaRouter->getUriPathParams($_SERVER['REQUEST_URI']);
+//print_r($eaRouterUriPathParams);
+
+$matchedRouteResponse = $eaRouter->matchRoute($routes, $_SERVER['REQUEST_URI'], [], $_SERVER["REQUEST_METHOD"], "500");
+
+print_r($matchedRouteResponse);
+
+
+
+

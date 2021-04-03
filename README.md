@@ -6,7 +6,7 @@
 With Composer, run
 
 ```sh
-composer require easeappphp/ea-router:^1.0.1
+composer require easeappphp/ea-router:^1.0.2
 ```
 
 # Sample Routes
