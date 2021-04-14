@@ -169,99 +169,84 @@ class EARouter implements RouterInterface
 					if (stripos($routeArray['route_value'], ":routing_eng_var_") !== false) {
 						
 						$this->specificRouteValueConstructed = array();
+						
 						foreach($this->specificRouteParams as $k => $v) {
+							
 							if ($v == ":routing_eng_var_" . $k) {
+								
 								$this->specificRouteValueConstructed[] = $this->uriPathParams[$k];
+								
 							}  else {
+								
 								$this->specificRouteValueConstructed[] = $v;
+								
 							} 
 						}
 						
 						$this->specificRouteValueImploded = implode("/", $this->specificRouteValueConstructed);
 						
 					} else {
+						
 						$this->specificRouteValueImploded = $routeArray['route_value'];
 						
 					}
 					
 					if (($this->specificRouteValueImploded === $uriPath) && ($this->specificRouteParamsCount == $this->uriPathParamsCount)) {	
 						
-						if (isset($routeArray['allowed_request_method'])) {
-							if ($routeArray['allowed_request_method'] == "ANY") {
-								//This means, there is no restriction about the METHOD that is used for this http / https request (GET / POST / PUT / DELETE all works), if the VALUE is ANY.
-								return [
-	
-									'matched_route_key' => $key,
-									'matched_page_filename' => $routeArray['page_filename'],
-									'received_request_method' => $receivedRequestMethod,
-									'original_route_rel_request_method' => $routeArray['allowed_request_method']
+						if (isset($routeArray['allowed_request_methods'])) {
+							
+							if (in_array($receivedRequestMethod, $routeArray['allowed_request_methods'], true)) {
+								
+								if ($receivedRequestMethod === 'ANY') {
 									
-								];
-							} elseif (($routeArray['allowed_request_method'] == "GET") && ($receivedRequestMethod === "GET")) {
-								//This means, only requests that is initiated using GET METHOD are allowed, if the VALUE is GET.
-								return [
-	
-									'matched_route_key' => $key,
-									'matched_page_filename' => $routeArray['page_filename'],
-									'received_request_method' => $receivedRequestMethod,
-									'original_route_rel_request_method' => $routeArray['allowed_request_method']
+									return [
+
+										'matched_route_key' => $key,
+										'matched_page_filename' => $routeArray['page_filename'],
+										'received_request_method' => $receivedRequestMethod,
+										'allowed_request_methods' => ['ANY']
+										
+									];
 									
-								];								
-							} elseif (($routeArray['allowed_request_method'] == "POST") && ($receivedRequestMethod === "POST")) {
-								//This means, only requests that is initiated using POST METHOD are allowed, if the VALUE is POST.
-								return [
-	
-									'matched_route_key' => $key,
-									'matched_page_filename' => $routeArray['page_filename'],
-									'received_request_method' => $receivedRequestMethod,
-									'original_route_rel_request_method' => $routeArray['allowed_request_method']
+								} else {
 									
-								];
-							} elseif (($routeArray['allowed_request_method'] == "PUT") && ($receivedRequestMethod === "PUT")) {
-								//This means, only requests that is initiated using PUT METHOD are allowed, if the VALUE is PUT.
-								return [
+									return [
 	
-									'matched_route_key' => $key,
-									'matched_page_filename' => $routeArray['page_filename'],
-									'received_request_method' => $receivedRequestMethod,
-									'original_route_rel_request_method' => $routeArray['allowed_request_method']
+										'matched_route_key' => $key,
+										'matched_page_filename' => $routeArray['page_filename'],
+										'received_request_method' => $receivedRequestMethod,
+										'allowed_request_methods' => $routeArray['allowed_request_methods']
+										
+									];
 									
-								];
-							} elseif (($routeArray['allowed_request_method'] == "DELETE") && ($receivedRequestMethod === "DELETE")) {
-								//This means, only requests that is initiated using DELETE METHOD are allowed, if the VALUE is DELETE.
-								return [
-	
-									'matched_route_key' => $key,
-									'matched_page_filename' => $routeArray['page_filename'],
-									'received_request_method' => $receivedRequestMethod,
-									'original_route_rel_request_method' => $routeArray['allowed_request_method']
-									
-								];
+								}								
+								
 							} else {
-								//The value of allowed_request_method of $routeArray['allowed_request_method'] is invalid, so, return, bad request in headers response only scenario.
-								//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
+								
 								return [
-									
+
 									'matched_route_key' => "header-response-only-405-method-not-allowed",
 									'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
 									'received_request_method' => $receivedRequestMethod,
-									'original_route_rel_request_method' => $routeArray['allowed_request_method']
+									'allowed_request_methods' => $routeArray['allowed_request_methods']
 									
 								];
-							}	
-							
-						} else {
-							//The value of allowed_request_method of $routeArray['allowed_request_method'] is invalid, so, return, bad request in headers response only scenario.
-							//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
-							return [
-
-								'matched_route_key' => "header-response-only-405-method-not-allowed",
-								'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
-								'received_request_method' => $receivedRequestMethod,
-								'original_route_rel_request_method' => $routeArray['allowed_request_method']
 								
-							];
+							}
+							
 						}
+						
+						//The value of allowed_request_methods of $routeArray['allowed_request_methods'] is invalid, so, return, bad request in headers response only scenario.
+						//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
+						return [
+
+							'matched_route_key' => "header-response-only-405-method-not-allowed",
+							'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
+							'received_request_method' => $receivedRequestMethod,
+							'allowed_request_methods' => $routeArray['allowed_request_methods']
+							
+						];
+						
 						
 					}
 				}
@@ -275,7 +260,7 @@ class EARouter implements RouterInterface
 			'matched_route_key' => "header-response-only-404-not-found",
 			'matched_page_filename' => "header-response-only-404-not-found.php",
 			'received_request_method' => $receivedRequestMethod,
-			'original_route_rel_request_method' => $routeArray['allowed_request_method']
+			'allowed_request_methods' => $routeArray['allowed_request_methods']
 			
 		];
 	}
