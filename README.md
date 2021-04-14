@@ -6,7 +6,7 @@
 With Composer, run
 
 ```sh
-composer require easeappphp/ea-router:^1.0.2
+composer require easeappphp/ea-router:^1.0.4
 ```
 
 # Sample Routes
@@ -18,7 +18,12 @@ composer require easeappphp/ea-router:^1.0.2
 	'page_filename' => 'rest-login.php',
 	'redirect_to' => '',
 	'route_type' => 'rest-web-service',
-	'allowed_request_method' => 'POST'
+	'allowed_request_methods' => ['POST'],
+			'controller_type' => 'procedural',
+			'controller_class_name' => \EaseAppPHP\EABlueprint\App\Http\Controllers\ProceduralController::class,
+			'method_name' => '',
+			'with_middleware' => '',
+			'without_middleware' => ''
 ],
 
 ```
@@ -27,13 +32,18 @@ composer require easeappphp/ea-router:^1.0.2
 
 #My Profile REST API Route
 ```php
-'rest-my-profile' => [
-	'route_value' => '/rest/my-profile',
-	'auth_check_requirements' => 'post-login',
-	'page_filename' => 'rest-my-profile.php',
+'rest-get-all-user-details' => [
+	'route_value' => '/rest/all-user-details/get',
+	'auth_check_requirements' => 'none',
+	'page_filename' => '',
 	'redirect_to' => '',
 	'route_type' => 'rest-web-service',
-	'allowed_request_method' => 'POST'
+	'allowed_request_methods' => ['POST'],
+			'controller_type' => 'oop-mapped',
+			'controller_class_name' => \EaseAppPHP\EABlueprint\App\Http\Controllers\AllUserDetails\GetController::class,
+			'method_name' => 'index',
+			'with_middleware' => '',
+			'without_middleware' => ''
 ],
 
 ```
