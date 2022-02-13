@@ -6,7 +6,7 @@
 With Composer, run
 
 ```sh
-composer require easeappphp/ea-router:^1.0.4
+composer require easeappphp/ea-router:^1.0.5
 ```
 
 # Sample Routes
@@ -21,7 +21,7 @@ composer require easeappphp/ea-router:^1.0.4
 	'allowed_request_methods' => ['POST'],
 			'controller_type' => 'procedural',
 			'controller_class_name' => \EaseAppPHP\EABlueprint\App\Http\Controllers\ProceduralController::class,
-			'method_name' => '',
+			'method_name' => 'webHtmlOutput',
 			'with_middleware' => '',
 			'without_middleware' => ''
 ],
@@ -35,7 +35,7 @@ composer require easeappphp/ea-router:^1.0.4
 'rest-get-all-user-details' => [
 	'route_value' => '/rest/all-user-details/get',
 	'auth_check_requirements' => 'none',
-	'page_filename' => '',
+	'page_filename' => 'rest-all-user-details-get.php',
 	'redirect_to' => '',
 	'route_type' => 'rest-web-service',
 	'allowed_request_methods' => ['POST'],

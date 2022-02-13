@@ -195,23 +195,23 @@ class EARouter implements RouterInterface
 						
 						if (isset($routeArray['allowed_request_methods'])) {
 							
-							if (in_array($receivedRequestMethod, $routeArray['allowed_request_methods'], true)) {
+							if (in_array('ANY', $routeArray['allowed_request_methods'], true)) {	
+							
+								return [
+
+									'matched_route_key' => $key,
+									'matched_page_filename' => $routeArray['page_filename'],
+									'received_request_method' => $receivedRequestMethod,
+									'allowed_request_methods' => ['GET','HEAD','POST','PUT','DELETE','CONNECT','OPTIONS','TRACE','PATCH']
+									
+								];
 								
-								if ($receivedRequestMethod === 'ANY') {
+							} else {
+								
+								if (in_array($receivedRequestMethod, $routeArray['allowed_request_methods'], true)) {
 									
 									return [
 
-										'matched_route_key' => $key,
-										'matched_page_filename' => $routeArray['page_filename'],
-										'received_request_method' => $receivedRequestMethod,
-										'allowed_request_methods' => ['ANY']
-										
-									];
-									
-								} else {
-									
-									return [
-	
 										'matched_route_key' => $key,
 										'matched_page_filename' => $routeArray['page_filename'],
 										'received_request_method' => $receivedRequestMethod,
@@ -219,10 +219,9 @@ class EARouter implements RouterInterface
 										
 									];
 									
-								}								
-								
-							} else {
-								
+									
+								}
+									
 								return [
 
 									'matched_route_key' => "header-response-only-405-method-not-allowed",
@@ -232,7 +231,10 @@ class EARouter implements RouterInterface
 									
 								];
 								
+								
 							}
+							
+							
 							
 						}
 						
