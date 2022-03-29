@@ -166,7 +166,7 @@ class EARouter implements RouterInterface
 					
 					$this->specificRouteParamsCount = count($this->specificRouteParams);
 					
-					if (stripos($routeArray['route_value'], ":routing_eng_var_") !== false) {
+					if (stripos($routeArray['route_value'], ":routing_eng_var_") === true) {	
 						
 						$this->specificRouteValueConstructed = array();
 						

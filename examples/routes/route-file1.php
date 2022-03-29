@@ -353,6 +353,19 @@ return [
                 'with_middleware' => '',
                 'without_middleware' => ''
 	],
+		'admin-panel-pages-manage' => [
+		'route_value' => '/admin-panel/:routing_eng_var_2/pages/:routing_eng_var_4/manage',
+		'auth_check_requirements' => 'post-login',
+		'page_filename' => 'admin-panel-pages-add.php',
+		'redirect_to' => '',
+		'route_type' => 'backend-web-app',
+		'allowed_request_methods' => ['GET','POST'],
+                'controller_type' => 'procedural',
+                'controller_class_name' => \EaseAppPHP\EABlueprint\App\Http\Controllers\ProceduralController::class,
+                'method_name' => 'webHtmlOutput',
+                'with_middleware' => '',
+                'without_middleware' => ''
+	],
 
 ];	
 ?>
