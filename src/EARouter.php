@@ -31,9 +31,9 @@ class EARouter implements RouterInterface
 	private $uriPathParamsCollected = array();
 	private $uriPathParams = array();
 	private $uriPathParamsCount = 0;
-	private $specificRouteParams = array();
+	//private $specificRouteParams = array();
 	private $specificRouteParamsCount = 0;
-	private $specificRouteValueConstructed = array();
+	//private $specificRouteValueConstructed = array();
 	private $specificRouteValueImploded = "";
 	
 	/**
@@ -152,6 +152,7 @@ class EARouter implements RouterInterface
 		if (mb_strlen(filter_var($uriPath, FILTER_SANITIZE_STRING))<$configuredMaxRouteLength) {
 			
 			$this->uriPathParams = $this->getUriPathParams($uriPath);
+			 
 			
 			$this->uriPathParamsCount = count($this->uriPathParams);
 			
@@ -159,61 +160,85 @@ class EARouter implements RouterInterface
 				
 				if (isset($routeArray['route_value'])) {
 					
-					$this->specificRouteParams = array();
+					$specificRouteParams = array();
 					
 					//Get Route Value example: /resume-name/:routing_eng_var_2
-					$this->specificRouteParams = $this->getUriPathParams($routeArray['route_value']);
-					
-					$this->specificRouteParamsCount = count($this->specificRouteParams);
-					
-					if (stripos($routeArray['route_value'], ":routing_eng_var_") === true) {	
+					$specificRouteParams = $this->getUriPathParams($routeArray['route_value']);
 						
-						$this->specificRouteValueConstructed = array();
+					$this->specificRouteParamsCount = count($specificRouteParams);
+					
+					if ($this->specificRouteParamsCount == $this->uriPathParamsCount) {
 						
-						foreach($this->specificRouteParams as $k => $v) {
+						if (stripos($routeArray['route_value'], ":routing_eng_var_") === FALSE) {
 							
-							if ($v == ":routing_eng_var_" . $k) {
+							$this->specificRouteValueImploded = $routeArray['route_value'];
+							
+						} else {
+							
+							$specificRouteValueConstructed = array();
+							
+							foreach($specificRouteParams as $k => $v) {
 								
-								$this->specificRouteValueConstructed[] = $this->uriPathParams[$k];
+								if ($v != ":routing_eng_var_" . $k) {
+									
+									$specificRouteValueConstructed[] = $v;
+									
+								}  else {
+									
+									if (isset($this->uriPathParams[$k])) {
+										
+										$specificRouteValueConstructed[] = $this->uriPathParams[$k];
+										
+									} else {
+										
+										break;
+										
+									}
+									
+									
+								} 
 								
-							}  else {
-								
-								$this->specificRouteValueConstructed[] = $v;
-								
-							} 
+							}
+							
+							$this->specificRouteValueImploded = implode("/", $specificRouteValueConstructed);
 						}
 						
-						$this->specificRouteValueImploded = implode("/", $this->specificRouteValueConstructed);
-						
-					} else {
-						
-						$this->specificRouteValueImploded = $routeArray['route_value'];
-						
-					}
-					
-					if (($this->specificRouteValueImploded === $uriPath) && ($this->specificRouteParamsCount == $this->uriPathParamsCount)) {	
-						
-						if (isset($routeArray['allowed_request_methods'])) {
 							
-							if (in_array('ANY', $routeArray['allowed_request_methods'], true)) {	
+						if ($this->specificRouteValueImploded === $uriPath) {
 							
-								return [
-
-									'matched_route_key' => $key,
-									'matched_page_filename' => $routeArray['page_filename'],
-									'received_request_method' => $receivedRequestMethod,
-									'allowed_request_methods' => ['GET','HEAD','POST','PUT','DELETE','CONNECT','OPTIONS','TRACE','PATCH']
-									
-								];
+							if (isset($routeArray['allowed_request_methods'])) {
 								
-							} else {
+								if (in_array('ANY', $routeArray['allowed_request_methods'], true)) {	
 								
-								if (in_array($receivedRequestMethod, $routeArray['allowed_request_methods'], true)) {
-									
 									return [
 
 										'matched_route_key' => $key,
 										'matched_page_filename' => $routeArray['page_filename'],
+										'received_request_method' => $receivedRequestMethod,
+										'allowed_request_methods' => ['GET','HEAD','POST','PUT','DELETE','CONNECT','OPTIONS','TRACE','PATCH']
+										
+									];
+									
+								} else {
+									
+									if (in_array($receivedRequestMethod, $routeArray['allowed_request_methods'], true)) {
+										
+										return [
+
+											'matched_route_key' => $key,
+											'matched_page_filename' => $routeArray['page_filename'],
+											'received_request_method' => $receivedRequestMethod,
+											'allowed_request_methods' => $routeArray['allowed_request_methods']
+											
+										];
+										
+										
+									}
+										
+									return [
+
+										'matched_route_key' => "header-response-only-405-method-not-allowed",
+										'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
 										'received_request_method' => $receivedRequestMethod,
 										'allowed_request_methods' => $routeArray['allowed_request_methods']
 										
@@ -221,36 +246,26 @@ class EARouter implements RouterInterface
 									
 									
 								}
-									
-								return [
-
-									'matched_route_key' => "header-response-only-405-method-not-allowed",
-									'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
-									'received_request_method' => $receivedRequestMethod,
-									'allowed_request_methods' => $routeArray['allowed_request_methods']
-									
-								];
+								
 								
 								
 							}
 							
-							
+							//The value of allowed_request_methods of $routeArray['allowed_request_methods'] is invalid, so, return, bad request in headers response only scenario.
+							//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
+							return [
+
+								'matched_route_key' => "header-response-only-405-method-not-allowed",
+								'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
+								'received_request_method' => $receivedRequestMethod,
+								'allowed_request_methods' => $routeArray['allowed_request_methods']
+								
+							];
 							
 						}
 						
-						//The value of allowed_request_methods of $routeArray['allowed_request_methods'] is invalid, so, return, bad request in headers response only scenario.
-						//$_SESSION["allowed_http_method_request"] = $routeArray['allowed_request_method'];
-						return [
-
-							'matched_route_key' => "header-response-only-405-method-not-allowed",
-							'matched_page_filename' => "header-response-only-405-method-not-allowed.php",
-							'received_request_method' => $receivedRequestMethod,
-							'allowed_request_methods' => $routeArray['allowed_request_methods']
-							
-						];
-						
-						
 					}
+					
 				}
 				
 			}
