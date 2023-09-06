@@ -14,7 +14,7 @@ use function count;
 use function mb_strlen;
 use function filter_var;
 use function implode;
-use const FILTER_SANITIZE_STRING;
+//use const FILTER_SANITIZE_STRING;
 
 /**
  * EARouter Class
@@ -149,7 +149,8 @@ class EARouter implements RouterInterface
 	 */
 	public function matchRoute($routesArray, $uriPath, $queryStringArray, $receivedRequestMethod, $configuredMaxRouteLength)
 	{
-		if (mb_strlen(filter_var($uriPath, FILTER_SANITIZE_STRING))<$configuredMaxRouteLength) {
+		//if (mb_strlen(filter_var($uriPath, FILTER_SANITIZE_STRING))<$configuredMaxRouteLength) {
+		if (mb_strlen($uriPath)<$configuredMaxRouteLength) {	
 			
 			$this->uriPathParams = $this->getUriPathParams($uriPath);
 			 
